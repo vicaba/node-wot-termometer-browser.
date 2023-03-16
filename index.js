@@ -16,6 +16,7 @@ servient.start()
                     console.log(td.properties[Object.keys(td.properties)[0]])
                     document.getElementById('thing-1-description').innerText = td.description
                     document.getElementById('thing-1-first-property').innerText = Object.keys(td.properties)[0]
+                    document.getElementById('thing-1-first-action').innerText = Object.keys(td.actions)[0]
 
                     return thingFactory.consume(td)
                 })
@@ -30,23 +31,17 @@ servient.start()
                     thing.subscribeEvent("overheat", async (data) => {
                         console.log("overheat event:", await data.value())
                     });
+
+                    document.getElementById('thing-1-first-action-button').addEventListener('click', function (e) {
+                        e.preventDefault()
+                        let value = document.getElementById('thing-1-first-action-input').value
+                        console.log("Action value:", value)
+                        thing.invokeAction(Object.keys(thing.getThingDescription().actions)[0], parseInt(value))
+                            .then((res) => {
+                                console.log("Action result:", res)
+                            })
+                    })
                 });
         })
 
     });
-
-/*let servient = new Wot.Core.Servient();
-servient.addClientFactory(new Wot.Http.HttpClientFactory());
-let helpers = new Wot.Core.Helpers(servient);
-
-helpers.fetch("http://localhost:8080/temperaturecontroller").then(async (td) => {
-    servient.start().then(async (thingFactory) => {
-        const thing = await thingFactory.consume(td);
-        console.log("Thing Description:", td);
-
-        await thing.subscribeEvent("overheat", async (data) => {
-            console.log("overheat event:", await data.value());
-        });
-
-    });
-})*/

@@ -56,13 +56,18 @@ servient.start().then((WoT) => {
             });
 
             // set action handlers
-            thing.setActionHandler("increment", function (value, options) {
+            thing.setActionHandler("increment", async function (params, options) {
+                console.log("incrementing temperature with")
+                let value = await params.value()
+                console.log(value)
                 changeTemperature(getTemperature() + value)
             });
 
-            thing.setActionHandler("decrement", function (value, options) {
-                changeTemperature(getTemperature() - value)
-            });
+            thing.setActionHandler("decrement", async function (params, options) {
+                console.log("decrementing temperature with")
+                let value = await params.value()
+                console.log(value)
+                changeTemperature(getTemperature() - value)            });
 
             // check the temperature every 5 seconds, alert if temperature too high
             setInterval(() => {
