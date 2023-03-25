@@ -46,6 +46,7 @@ servient.start().then((WoT) => {
         .then(function (thing) {
             console.log("Produced " + thing.getThingDescription().title);
             console.log(thing)
+
             // init property values
             temperature = 20;
 
@@ -58,16 +59,19 @@ servient.start().then((WoT) => {
             // set action handlers
             thing.setActionHandler("increment", async function (params, options) {
                 console.log("incrementing temperature with")
-                let value = await params.value()
-                console.log(value)
-                changeTemperature(getTemperature() + value)
+                params.value().then((value) => {
+                    console.log(value)
+                    changeTemperature(getTemperature() + value)
+                })
             });
 
             thing.setActionHandler("decrement", async function (params, options) {
                 console.log("decrementing temperature with")
-                let value = await params.value()
-                console.log(value)
-                changeTemperature(getTemperature() - value)            });
+                params.value().then((value) => {
+                    console.log(value)
+                    changeTemperature(getTemperature() - value)
+                })
+            });
 
             // check the temperature every 5 seconds, alert if temperature too high
             setInterval(() => {
@@ -79,7 +83,7 @@ servient.start().then((WoT) => {
                 if (temperature % 10 === 0) {
                     thing.emitEvent("overheat", temperature);
                 }
-            }, 5000);
+            }, 1000);
 
             // expose the thing
             thing.expose().then(function () {
@@ -98,7 +102,6 @@ servient.start().then((WoT) => {
                 // normally, you would do physical action to change the temperature
                 //do nothing
                 temperature = newValue;
-                return;
             }
         })
         .catch(function (e) {
